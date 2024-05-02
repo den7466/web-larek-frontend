@@ -12,8 +12,8 @@ export class OrderPayment extends Form implements IOrderPayment {
 	protected _onlinePaymentButton: HTMLButtonElement;
 	protected _receiptPaymentButton: HTMLButtonElement;
 
-	constructor(protected template: HTMLTemplateElement) {
-		super(template, 'form');
+	constructor(protected template: HTMLTemplateElement, protected blockName: string) {
+		super(template, blockName);
     this._address = this.findInputByName('address');
 		this._onlinePaymentButton = ensureElement<HTMLButtonElement>('button[name="card"]', this._container);
 		this._receiptPaymentButton = ensureElement<HTMLButtonElement>('button[name="cash"]', this._container);

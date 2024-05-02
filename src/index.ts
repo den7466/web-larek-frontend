@@ -17,8 +17,7 @@ import { OrderSuccess } from './components/OrderSuccess';
 import { Page } from './components/Page';
 
 // Шаблоны
-const galleryCatalogTemplate =
-	ensureElement<HTMLTemplateElement>('#card-catalog');
+const galleryCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardFullTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
 const basketCardTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
@@ -34,7 +33,8 @@ const modalElement = ensureElement<HTMLElement>('.modal');
 function handleOpenFullModal(data: { id: string }): void {
 	if (basketData.existsInBasket(data.id))
 		modal.content = renderViewFull(storeData.getCard(data.id), true);
-	else modal.content = renderViewFull(storeData.getCard(data.id), false);
+	else
+		modal.content = renderViewFull(storeData.getCard(data.id), false);
 	modal.open();
 }
 
@@ -58,35 +58,24 @@ function handleRemoveFromBasket(data: { id: string }) {
 }
 
 function handleCheckout() {
-	orderData.order.items = basketData.cardsInBasket.map((item) => {
-		return item.id;
-	});
+	orderData.order.items = basketData.cardsInBasket.map((item) => item.id);
 	orderData.order.total = basketData.total;
 	modal.content = renderViewOrderPayment();
 }
 
-function handleSubmitOrderPayment(data: {
-	evt: Event;
-	payment: TPayment;
-	address: string;
-}) {
+function handleSubmitOrderPayment(data: { evt: Event; payment: TPayment; address: string; }) {
 	data.evt.preventDefault();
 	orderData.order.payment = data.payment;
 	orderData.order.address = data.address;
 	modal.content = renderViewOrderContact();
 }
 
-function handleSubmitOrderContact(data: {
-	evt: Event;
-	email: string;
-	phone: string;
-}) {
+function handleSubmitOrderContact(data: { evt: Event; email: string; phone: string; }) {
 	data.evt.preventDefault();
 	orderData.order.email = data.email;
 	orderData.order.phone = data.phone;
-	api
-		.pushOrder(orderData.order)
-		.then((data) => {
+	api.pushOrder(orderData.order)
+    .then((data) => {
 			basketData.clearBasket();
 			page.counter = basketData.cardsInBasket.length;
 			orderData.clearOrder();
@@ -148,7 +137,7 @@ function renderViewCardsBasket(data: ICard[]) {
 }
 
 function renderViewOrderPayment(): HTMLElement {
-	const orderPaymentForm = new OrderPayment(orderPaymentTemplate);
+	const orderPaymentForm = new OrderPayment(orderPaymentTemplate, 'form');
 	if (orderPaymentForm) {
 		orderPaymentForm.on('submit:payment', handleSubmitOrderPayment.bind(this));
 		return orderPaymentForm.render();
@@ -158,7 +147,7 @@ function renderViewOrderPayment(): HTMLElement {
 }
 
 function renderViewOrderContact(): HTMLElement {
-	const orderContactForm = new OrderContact(orderContactTemplate);
+	const orderContactForm = new OrderContact(orderContactTemplate, 'form');
 	if (orderContactForm) {
 		orderContactForm.on('submit:contact', handleSubmitOrderContact.bind(this));
 		return orderContactForm.render();

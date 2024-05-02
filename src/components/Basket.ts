@@ -16,18 +16,10 @@ export class Basket extends EventEmitter implements IBasket {
 	constructor(template: HTMLTemplateElement) {
 		super();
 		this._container = cloneTemplate(template);
-		this._content = ensureElement<HTMLElement>(
-			'.basket__list',
-			this._container
-		);
+		this._content = ensureElement<HTMLElement>('.basket__list', this._container);
 		this._total = ensureElement<HTMLElement>('.basket__price', this._container);
-		this._buttonCheckout = ensureElement<HTMLButtonElement>(
-			'.basket__button',
-			this._container
-		);
-		this._buttonCheckout.addEventListener('click', () =>
-			this.emit('open:checkout')
-		);
+		this._buttonCheckout = ensureElement<HTMLButtonElement>('.basket__button', this._container);
+		this._buttonCheckout.addEventListener('click', () => this.emit('open:checkout'));
 	}
 
 	set total(value: number) {
@@ -43,8 +35,10 @@ export class Basket extends EventEmitter implements IBasket {
 	}
 
 	render(list: HTMLElement[]): HTMLElement {
-		if (list) this.content = list;
-		else this.disableCheckout();
+		if (list)
+      this.content = list;
+		else
+      this.disableCheckout();
 		return this._container;
 	}
 }
