@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="theme-color" content="#000000" />
-	<link rel="icon" href="/favicon.ico" />
+	<link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 	<!-- <link rel="manifest" href="/manifest.json" /> -->
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -40,7 +40,7 @@
 		</div>
 	</div>
 
-	<div class="modal">
+	<!-- <div class="modal">
 		<div class="modal__container">
 			<button class="modal__close" aria-label="закрыть"></button>
 			<div class="modal__content">
@@ -155,7 +155,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 
 	<template id="success">
 		<div class="order-success">
@@ -178,7 +178,7 @@
 		<div class="card card_full">
 			<img class="card__image" src="<%=require('../images/Subtract.svg')%>" alt="" />
 			<div class="card__column">
-				<span class="card__category card__category_other">другое</span>
+				<span class="card__category">другое</span>
 				<h2 class="card__title">Бэкенд-антистресс</h2>
 				<p class="card__text">Если планируете решать задачи в тренажёре, берите два.</p>
 				<div class="card__row">
@@ -244,7 +244,7 @@
 				</label>
 			</div>
 			<div class="modal__actions">
-				<button type="submit" disabled class="button">Оплатить</button>
+				<button type="submit" disabled class="button order__button">Оплатить</button>
 				<span class="form__errors"></span>
 			</div>
 		</form>

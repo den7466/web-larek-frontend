@@ -161,8 +161,27 @@ export interface IBasketModel {
 - `get id(): string` - геттер, возвращает id карточки;
 - `set title(value: string)` - сеттер для установки наименования карточки;
 - `get title(): string` - геттер, возвращает наименование карточки;
-- `set price(value: number)` - сеттер для установки цены карточки;
-- `get price(): number` - геттер, возвращает цену карточки.
+- `set price(value: number | null)` - сеттер для установки цены карточки;
+- `get price(): number | null` - геттер, возвращает цену карточки.
+
+#### Базовый класс Form
+Класс `Form`, расширяет класс `EventEmitter`, реализует базовое отображение форм и является базовым классом для форм.
+
+Конструктор класса принимает два параметра: `template` - шаблон разметки блока, blockName - наименование главного блока формы.
+
+Поля класса:
+- `_container: HTMLElement` - элемент формы с разметкой;
+- `_inputs: HTMLInputElement[]` - массив элементов полей ввода;
+- `_buttonSubmit: HTMLButtonElement` - элемент кнопки отправки;
+- `_errors: HTMLElement` - элемент ошибки форм.
+
+Методы, реализуемые классом:
+- `private isValid(inputs: HTMLInputElement[]): boolean` - приватный метод, параметром принимает массив элементов полей ввода, возвращает true или false - на основании заполненности всех полей;
+- `private disableSubmit(disabled: boolean): void` - приватный метод, параметром принимает true или false, отключает кнопку отправки формы;
+- `private setValidate(inputs: HTMLInputElement[]): void` - приватный метод, параметром принимает массив элементов полей ввода,  устанавливает валидацию на все поля ввода;
+- `protected findInputByName(name: string): HTMLInputElement` - защищенный метод, параметром принимает наименование поля, возвращает элемент поля ввода на основании переданного имени.
+
+Сеттеры, геттеры:
 
 ### Слой данных
 
@@ -322,32 +341,26 @@ export interface IBasketModel {
 Конструктор класса принимает один параметр: `template` - шаблон разметки блока.
 
 Поля класса:
-- `_container: HTMLElement` - элемент с итоговой разметкой формы;
 - `_email: HTMLInputElement` - элемент поля ввода email;
-- `_phone: HTMLInputElement` - элемент поля ввода phone;
-- `_orderButton: HTMLButtonElement` - элемент кнопки оформления заказа.
+- `_phone: HTMLInputElement` - элемент поля ввода phone.
 
 Методы, реализуемые классом:
-- `protected isValidInputs(): void` - валидирует инпуты в форме;
 - `render(): HTMLElement` - не принимает параметров, возвращает готовый элемент формы.
 
 #### Класс OrderPayment
-Класс `OrderPayment`, расширяет класс `EventEmitter`, описан интерфейсом `IOrderPayment`, реализует отображение формы с добавлением адреса и выбора метода оплаты.
+Класс `OrderPayment`, расширяет класс `Form`, описан интерфейсом `IOrderPayment`, реализует отображение формы с добавлением адреса и выбора метода оплаты.
 
 Конструктор класса принимает один параметр: `template` - шаблон разметки блока.
 
 Поля класса:
 - `_payment: TPayment` - способ оплаты;
-- `_container: HTMLElement` - элемент с итоговой разметкой формы;
 - `_address: HTMLInputElement` - элемент поля ввода адреса;
 - `_onlinePaymentButton: HTMLButtonElement` - элемент кнопки выбора метода платежа "Онлайн";
-- `_receiptPaymentButton: HTMLButtonElement` - элемент кнопки выбора метода платежа "При получении";
-- `_orderButton: HTMLButtonElement` - элемент кнопки оформления заказа.
+- `_receiptPaymentButton: HTMLButtonElement` - элемент кнопки выбора метода платежа "При получении".
 
 Методы, реализуемые классом:
 - `private selectOnlinePayment(): void` - выбирает метод оплаты "онлайн";
 - `private selectReceiptPayment(): void` - выбирает метод оплаты "при получении";
-- `private isValid(input: HTMLInputElement): void` - валидирует инпут в форме;
 - `render(): HTMLElement` - не принимает параметров, возвращает готовый элемент формы.
 
 #### Класс OrderSuccess
@@ -366,7 +379,7 @@ export interface IBasketModel {
 #### Класс Page
 Класс `Page`, расширяет класс `EventEmitter`, описан интерфейсом `IPage`, реализует отображение общих элементов на странице.
 
-Конструктор класса принимает один параметр: _pageContainer - главный блок страницы.
+Конструктор класса принимает один параметр: pageContainer - главный блок страницы.
 
 Поля класса:
 - `_buttonBasket: HTMLButtonElement` - элемент кнопки корзины заказов;

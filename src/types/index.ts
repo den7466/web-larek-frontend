@@ -10,7 +10,7 @@ export interface ICard {
 export type TPayment = 'receipt' | 'online';
 
 export interface IOrder {
-  payment: TPayment;
+	payment: TPayment;
 	email: string;
 	phone: string;
 	address: string;
@@ -19,8 +19,8 @@ export interface IOrder {
 }
 
 export interface IOrderModel {
-  order: IOrder;
-    clearOrder: () => void;
+	order: IOrder;
+	clearOrder: () => void;
 }
 
 export interface IStoreModel {
