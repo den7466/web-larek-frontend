@@ -2,9 +2,9 @@ import { ICard, IOrder } from '../types';
 import { Api, ApiListResponse } from './base/api';
 
 export interface IStoreAPI {
-	getCardList: () => Promise<ICard[]>;
-	getCardItem: (id: string) => Promise<ICard>;
-	pushOrder: (data: IOrder) => Promise<any>;
+	getCardList(): Promise<ICard[]>;
+	getCardItem(id: string): Promise<ICard>;
+	pushOrder(data: IOrder): Promise<any>;
 }
 
 export class StoreApi extends Api implements IStoreAPI {

@@ -3,14 +3,14 @@ import { EventEmitter } from './base/events';
 
 export interface IBasket {
 	total: number;
-	content: HTMLElement[];
-	render: (list: HTMLElement[]) => HTMLElement;
+	content: HTMLElement[] | null;
+	render(list: HTMLElement[]): HTMLElement;
 }
 
 export class Basket extends EventEmitter implements IBasket {
 	protected _total: HTMLElement;
 	protected _container: HTMLElement;
-	protected _content: HTMLElement;
+	protected _content: HTMLElement | null;
 	protected _buttonCheckout: HTMLButtonElement;
 
 	constructor(template: HTMLTemplateElement) {
@@ -26,19 +26,29 @@ export class Basket extends EventEmitter implements IBasket {
 		this._total.textContent = value.toString() || '';
 	}
 
-	set content(value: HTMLElement[]) {
-		this._content.replaceChildren(...value);
+	set content(value: HTMLElement[] | null) {
+    if(value)
+		  this._content.replaceChildren(...value);
+    else
+      this._content.textContent = '';
 	}
 
-	protected disableCheckout() {
+	protected disableCheckout(): void {
 		this._buttonCheckout.setAttribute('disabled', 'disabled');
 	}
 
+  protected enableCheckout(): void {
+    this._buttonCheckout.removeAttribute('disabled');
+  }
+
 	render(list: HTMLElement[]): HTMLElement {
-		if (list)
+		if (list){
       this.content = list;
-		else
+      this.enableCheckout();
+    }else{
+      this.content = null;
       this.disableCheckout();
+    }
 		return this._container;
 	}
 }

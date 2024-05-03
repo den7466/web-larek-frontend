@@ -3,7 +3,7 @@ import { ensureElement } from '../utils/utils';
 import { Form } from './base/Form';
 
 export interface IOrderPayment {
-	render: () => HTMLElement;
+	render(): HTMLElement;
 }
 
 export class OrderPayment extends Form implements IOrderPayment {
@@ -36,6 +36,7 @@ export class OrderPayment extends Form implements IOrderPayment {
 	}
 
 	render(): HTMLElement {
+    this.selectOnlinePayment();
 		return this._container;
 	}
 }

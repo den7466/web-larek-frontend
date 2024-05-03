@@ -11,9 +11,7 @@ export class Modal implements IModal {
 	protected _content: HTMLElement;
 	protected _pageWrapper: HTMLElement;
 
-	constructor(
-		protected container: HTMLElement,
-		protected pageWrapper: HTMLElement
+	constructor(protected container: HTMLElement, protected pageWrapper: HTMLElement
 	) {
 		this._closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
 		this._content = ensureElement<HTMLElement>('.modal__content', container);

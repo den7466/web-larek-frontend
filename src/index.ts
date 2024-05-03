@@ -29,17 +29,40 @@ const succesOrderTemplate = ensureElement<HTMLTemplateElement>('#success');
 const pageWrapper = ensureElement<HTMLElement>('.page__wrapper');
 const modalElement = ensureElement<HTMLElement>('.modal');
 
+// Инициализация
+const page = new Page(pageWrapper);
+const modal = new Modal(modalElement, pageWrapper);
+const basketData = new BasketModel();
+const orderData = new OrderModel();
+const api = new StoreApi(CDN_URL, API_URL);
+const storeData = new StoreModel();
+const cardFull = new CardFull(cardFullTemplate, 'card');
+const basketList = new Basket(basketTemplate);
+const orderPaymentForm = new OrderPayment(orderPaymentTemplate, 'form');
+const orderContactForm = new OrderContact(orderContactTemplate, 'form');
+const orderSuccess = new OrderSuccess(succesOrderTemplate);
+
+// Установка слушателей
+page.on('open:basket', handleOpenBasketModal);
+cardFull.on('add:basket', handleAddToBasket);
+basketList.on('open:checkout', handleCheckout);
+orderPaymentForm.on('submit:payment', handleSubmitOrderPayment);
+orderContactForm.on('submit:contact', handleSubmitOrderContact);
+orderSuccess.on('close:success', handleCloseOrderSuccess);
+
 // Обработчики
 function handleOpenFullModal(data: { id: string }): void {
 	if (basketData.existsInBasket(data.id))
-		modal.content = renderViewFull(storeData.getCard(data.id), true);
-	else
-		modal.content = renderViewFull(storeData.getCard(data.id), false);
+    cardFull.disableAddButton();
+  else
+    cardFull.enableAddButton();
+	modal.content = cardFull.render(storeData.getCard(data.id));
 	modal.open();
 }
 
 function handleOpenBasketModal(): void {
-	modal.content = renderViewBasket();
+  basketList.total = basketData.total;
+	modal.content = basketList.render(renderViewCardsBasket(basketData.cardsInBasket));
 	modal.open();
 }
 
@@ -47,39 +70,42 @@ function handleAddToBasket(data: { id: string }) {
 	const basketItem = storeData.getCard(data.id);
 	basketData.addToBasket(basketItem);
 	page.counter = basketData.cardsInBasket.length;
-	modal.content = renderViewFull(storeData.getCard(data.id), true);
 	modal.close();
 }
 
 function handleRemoveFromBasket(data: { id: string }) {
-	basketData.removeFromBasket(data.id);
+  basketData.removeFromBasket(data.id);
+  basketList.total = basketData.total;
 	page.counter = basketData.cardsInBasket.length;
-	modal.content = renderViewBasket();
+	modal.content = basketList.render(renderViewCardsBasket(basketData.cardsInBasket));
 }
 
 function handleCheckout() {
 	orderData.order.items = basketData.cardsInBasket.map((item) => item.id);
 	orderData.order.total = basketData.total;
-	modal.content = renderViewOrderPayment();
+	modal.content = orderPaymentForm.render();
 }
 
 function handleSubmitOrderPayment(data: { evt: Event; payment: TPayment; address: string; }) {
 	data.evt.preventDefault();
 	orderData.order.payment = data.payment;
 	orderData.order.address = data.address;
-	modal.content = renderViewOrderContact();
+  orderPaymentForm.clear();
+	modal.content = orderContactForm.render();
 }
 
 function handleSubmitOrderContact(data: { evt: Event; email: string; phone: string; }) {
 	data.evt.preventDefault();
 	orderData.order.email = data.email;
 	orderData.order.phone = data.phone;
+  orderContactForm.clear();
 	api.pushOrder(orderData.order)
     .then((data) => {
 			basketData.clearBasket();
 			page.counter = basketData.cardsInBasket.length;
 			orderData.clearOrder();
-			modal.content = renderViewOrderSuccess(data.total.toString());
+      orderSuccess.total = data.total.toString();
+      modal.content = orderSuccess.render();
 		})
 		.catch((err) => {
 			console.error('Ошибка отправки данных на сервер: ' + err);
@@ -90,106 +116,43 @@ function handleCloseOrderSuccess() {
 	modal.close();
 }
 
-// Отображение с данными
-function renderViewFull(data: ICard, addedToBasket: boolean) {
-	const cardItem = new CardFull(cardFullTemplate, 'card');
-	if (addedToBasket) cardItem.disableAddButton();
-	cardItem.on('add:basket', handleAddToBasket.bind(this));
-	const cardElement = cardItem.render(data);
-	if (cardElement) {
-		return cardElement;
-	} else {
-		return null;
-	}
-}
-
-function renderViewBasket(): HTMLElement {
-	const basketItems = renderViewCardsBasket(basketData.cardsInBasket);
-	const basketList = new Basket(basketTemplate);
-	if (basketList) {
-		basketList.total = basketData.total;
-		basketList.on('open:checkout', handleCheckout.bind(this));
-		return basketList.render(basketItems);
-	} else {
-		return null;
-	}
-}
-
+// Подготовка списка карточек
 function renderViewCardsBasket(data: ICard[]) {
 	if (data.length !== 0) {
 		let index = 0;
 		const cardList = data.map((item) => {
 			index++;
 			const cardItem = new CardBasket(basketCardTemplate, 'card');
-			cardItem.on('remove:basket', handleRemoveFromBasket.bind(this));
 			cardItem.index = index;
-			const cardElement = cardItem.render(item);
-			return cardElement;
+      // Установка слушателя
+      cardItem.on('remove:basket', handleRemoveFromBasket);
+			return cardItem.render(item);
 		});
-		if (cardList) {
-			return cardList;
-		} else {
-			return null;
-		}
+    return cardList;
 	} else {
 		return null;
 	}
 }
 
-function renderViewOrderPayment(): HTMLElement {
-	const orderPaymentForm = new OrderPayment(orderPaymentTemplate, 'form');
-	if (orderPaymentForm) {
-		orderPaymentForm.on('submit:payment', handleSubmitOrderPayment.bind(this));
-		return orderPaymentForm.render();
-	} else {
-		return null;
-	}
+function renderViewGallery(): HTMLElement[] {
+  if(storeData.cards.length !== 0){
+    const cardList = storeData.cards.map((item) => {
+      const cardItem = new CardGallery(galleryCatalogTemplate, 'card');
+      // Установка слушателя
+      cardItem.on('open:preview', handleOpenFullModal);
+      return cardItem.render(item);
+    });
+    return cardList;
+  }else{
+    return null
+  }
 }
-
-function renderViewOrderContact(): HTMLElement {
-	const orderContactForm = new OrderContact(orderContactTemplate, 'form');
-	if (orderContactForm) {
-		orderContactForm.on('submit:contact', handleSubmitOrderContact.bind(this));
-		return orderContactForm.render();
-	} else {
-		return null;
-	}
-}
-
-function renderViewOrderSuccess(total: string): HTMLElement {
-	const orderSuccess = new OrderSuccess(succesOrderTemplate, total);
-	if (orderSuccess) {
-		orderSuccess.on('close:success', handleCloseOrderSuccess.bind(this));
-		return orderSuccess.render();
-	} else {
-		return null;
-	}
-}
-
-function renderViewGallery(): void {
-	const cardList = storeData.cards.map((item) => {
-		const cardItem = new CardGallery(galleryCatalogTemplate, 'card');
-		cardItem.on('open:preview', handleOpenFullModal.bind(this));
-		const cardElement = cardItem.render(item);
-		return cardElement;
-	});
-	page.content = cardList;
-}
-
-// Инициализация
-const page = new Page(pageWrapper);
-page.on('open:basket', handleOpenBasketModal.bind(this));
-const modal = new Modal(modalElement, pageWrapper);
-const basketData = new BasketModel();
-const orderData = new OrderModel();
-const api = new StoreApi(CDN_URL, API_URL);
-const storeData = new StoreModel();
 
 // Отображение информации на странице
 api.getCardList()
   .then((data) => {
 		storeData.cards = data;
-		renderViewGallery();
+		page.content = renderViewGallery();
 	})
 	.catch((err) => {
 		console.error('Ошибка загрузки данных с сервера: ' + err);

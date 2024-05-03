@@ -80,7 +80,7 @@ export type TPayment = 'receipt' | 'online';
 ```js
 export interface IOrderModel {
   order: IOrder;
-	clearOrder: () => void;
+	clearOrder(): void;
 }
 ```
 
@@ -89,7 +89,7 @@ export interface IOrderModel {
 ```js
 export interface IStoreModel {
 	cards: ICard[];
-	getCard: (id: string) => ICard;
+	getCard(id: string): ICard;
 }
 ```
 
@@ -99,10 +99,10 @@ export interface IStoreModel {
 export interface IBasketModel {
 	cardsInBasket: ICard[];
 	total: number;
-	existsInBasket: (id: string) => boolean;
-	addToBasket: (card: ICard) => void;
-	removeFromBasket: (id: string) => void;
-	clearBasket: () => void;
+	existsInBasket(id: string): boolean;
+	addToBasket(card: ICard): void;
+	removeFromBasket(id: string): void;
+	clearBasket(): void;
 }
 ```
 
@@ -165,7 +165,7 @@ export interface IBasketModel {
 - `get price(): number | null` - геттер, возвращает цену карточки.
 
 #### Базовый класс Form
-Класс `Form`, расширяет класс `EventEmitter`, реализует базовое отображение форм и является базовым классом для форм.
+Класс `Form`, расширяет класс `EventEmitter`, описан интерфейсом `IForm`,реализует базовое отображение форм и является базовым классом для форм.
 
 Конструктор класса принимает два параметра: `template` - шаблон разметки блока, blockName - наименование главного блока формы.
 
@@ -179,7 +179,8 @@ export interface IBasketModel {
 - `private isValid(inputs: HTMLInputElement[]): boolean` - приватный метод, параметром принимает массив элементов полей ввода, возвращает true или false - на основании заполненности всех полей;
 - `private disableSubmit(disabled: boolean): void` - приватный метод, параметром принимает true или false, отключает кнопку отправки формы;
 - `private setValidate(inputs: HTMLInputElement[]): void` - приватный метод, параметром принимает массив элементов полей ввода,  устанавливает валидацию на все поля ввода;
-- `protected findInputByName(name: string): HTMLInputElement` - защищенный метод, параметром принимает наименование поля, возвращает элемент поля ввода на основании переданного имени.
+- `protected findInputByName(name: string): HTMLInputElement` - защищенный метод, параметром принимает наименование поля, возвращает элемент поля ввода на основании переданного имени;
+- `clear(): void` - очищает все поля формы.
 
 Сеттеры, геттеры:
 
@@ -257,16 +258,17 @@ export interface IBasketModel {
 Поля класса:
 - `_total: HTMLElement` - элемент с итоговой ценой;
 - `_container: HTMLElement` - элемент с итоговой разметкой корзины заказов;
-- `_content: HTMLElement` - элемент отображения списка карточек в корзине заказов;
+- `_content: HTMLElement | null` - элемент отображения списка карточек в корзине заказов;
 - `_buttonCheckout: HTMLButtonElement` - элемент кнопки оформления заказа.
 
 Методы, реализуемые классом:
-- `protected disableCheckout()` - защищенный метод для отключения кнопки оформления заказа;
+- `protected disableCheckout(): void` - защищенный метод для отключения кнопки оформления заказа;
+- `protected enableCheckout(): void` - защищенный метод для включения кнопки оформления заказа;
 - `render(list: HTMLElement[]): HTMLElement` - параметром принимает массив карточек, возвращает готовый элемент корзины со списком карточек.
 
 Сеттеры, геттеры:
 - `set total(value: number)` - сеттер для установки итоговой цены в корзине заказов;
-- `set content(value: HTMLElement[])` - сеттер для установки списка элементов в корзине заказов.
+- `set content(value: HTMLElement[] | null)` - сеттер для установки списка элементов в корзине заказов.
 
 #### Класс CardGallery
 Класс `CardGallery`, расширяет класс `Card`, описан интерфейсом `IViewCardGallery`, реализует отображение карточки товара в галереи карточек.
@@ -312,6 +314,7 @@ export interface IBasketModel {
 
 Методы, реализуемые классом:
 - `disableAddButton(): void` - отключает кнопку добавления в корзину товара;
+- `enableAddButton(): void` - включает кнопку добавления в корзину товара;
 - `render(card: ICard): HTMLElement` - параметром принимает данные карточки товара, возвращает готовую карточку с полными данными.
 
 Сеттеры, геттеры:
@@ -375,6 +378,9 @@ export interface IBasketModel {
 
 Методы, реализуемые классом:
 - `render(): HTMLElement` - не принимает параметров, возвращает готовый элемент блока успешного заказа.
+
+Сеттеры, геттеры:
+- `set total(value: string)` - сеттер, для установки итоговой цены.
 
 #### Класс Page
 Класс `Page`, расширяет класс `EventEmitter`, описан интерфейсом `IPage`, реализует отображение общих элементов на странице.

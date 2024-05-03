@@ -4,7 +4,8 @@ import { CardGallery } from './CardGallery';
 
 export interface IViewCardFull {
 	description: string;
-	disableAddButton: () => void;
+	disableAddButton(): void;
+  enableAddButton(): void;
 	render(card: ICard): HTMLElement;
 }
 
@@ -30,6 +31,10 @@ export class CardFull extends CardGallery implements IViewCardFull {
 	disableAddButton(): void {
 		this._buttonAddToBasket.setAttribute('disabled', 'disabled');
 	}
+
+  enableAddButton(): void {
+    this._buttonAddToBasket.removeAttribute('disabled');
+  }
 
 	render(card: ICard): HTMLElement {
 		this.id = card.id;

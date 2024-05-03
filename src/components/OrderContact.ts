@@ -1,7 +1,7 @@
 import { Form } from './base/Form';
 
 export interface IOrderContact {
-	render: () => HTMLElement;
+	render(): HTMLElement;
 }
 
 export class OrderContact extends Form implements IOrderContact {

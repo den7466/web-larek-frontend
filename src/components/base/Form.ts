@@ -1,6 +1,10 @@
 import { EventEmitter } from './events';
 import { cloneTemplate, ensureElement, ensureAllElements } from '../../utils/utils';
 
+export interface IForm {
+  clear(): void;
+}
+
 export class Form extends EventEmitter {
   protected _container: HTMLElement;
   protected _inputs: HTMLInputElement[];
@@ -46,6 +50,12 @@ export class Form extends EventEmitter {
   protected findInputByName(name: string): HTMLInputElement {
     return this._inputs.find((input) => {
       return input.name === name;
+    });
+  }
+
+  clear(): void {
+    this._inputs.forEach((input) => {
+      input.value = '';
     });
   }
 }
