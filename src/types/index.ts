@@ -20,6 +20,7 @@ export interface IOrder {
 
 export interface IOrderModel {
 	order: IOrder;
+  checkValidation(value: string | TPayment): boolean;
 	clearOrder(): void;
 }
 

@@ -1,4 +1,4 @@
-import { ICard, IStoreModel } from '../types';
+import { ICard, IStoreModel } from '../../types';
 
 export class StoreModel implements IStoreModel {
 	protected _cards: ICard[];

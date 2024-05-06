@@ -1,6 +1,6 @@
-import { ICard } from '../types';
-import { ensureElement } from '../utils/utils';
-import { Card } from './base/Card';
+import { ICard } from '../../types';
+import { ensureElement } from '../../utils/utils';
+import { Card } from '../base/Card';
 
 export interface IViewCardBasket {
 	index: number;

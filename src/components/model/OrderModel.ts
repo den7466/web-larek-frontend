@@ -1,4 +1,4 @@
-import { IOrder, IOrderModel, TPayment } from '../types';
+import { IOrder, IOrderModel, TPayment } from '../../types';
 
 export class OrderModel implements IOrderModel {
 	protected _order: IOrder;
@@ -43,11 +43,11 @@ export class OrderModel implements IOrderModel {
 	}
 
 	get address(): string {
-		return this._order.address;
+		return this._order.address || '';
 	}
 
 	set total(value: number) {
-		this._order.total = value;
+		this._order.total = value || 0;
 	}
 
 	get total(): number {
@@ -65,6 +65,16 @@ export class OrderModel implements IOrderModel {
 	get order(): IOrder {
 		return this._order;
 	}
+
+  checkValidation(value: string | TPayment): boolean {
+    if(typeof value === 'string'){
+      if(value.length > 0) return true;
+      else return false;
+    }else{
+      if(value === 'online' || value === 'receipt') return true;
+      else return false;
+    }
+  }
 
 	clearOrder(): void {
 		this._order.payment = 'online';

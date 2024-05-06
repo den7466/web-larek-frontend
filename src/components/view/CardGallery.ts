@@ -1,6 +1,6 @@
-import { ICard } from '../types';
-import { ensureElement } from '../utils/utils';
-import { Card } from './base/Card';
+import { ICard } from '../../types';
+import { ensureElement } from '../../utils/utils';
+import { Card } from '../base/Card';
 
 export interface IViewCardGallery {
 	image: string;
@@ -21,6 +21,7 @@ export class CardGallery extends Card implements IViewCardGallery {
 
 	set category(value: string) {
 		this._category.textContent = value || '';
+    this._category.className = 'card__category';
 		this._category.classList.add(this.categoryColorLabel(value));
 	}
 

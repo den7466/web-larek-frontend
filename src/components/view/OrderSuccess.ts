@@ -1,5 +1,5 @@
-import { cloneTemplate, ensureElement } from '../utils/utils';
-import { EventEmitter } from './base/events';
+import { cloneTemplate, ensureElement } from '../../utils/utils';
+import { EventEmitter } from '../base/events';
 
 export interface IOrderSuccess {
   total: string;

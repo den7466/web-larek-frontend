@@ -80,6 +80,7 @@ export type TPayment = 'receipt' | 'online';
 ```js
 export interface IOrderModel {
   order: IOrder;
+  checkValidation(value: string | TPayment): boolean;
 	clearOrder(): void;
 }
 ```
@@ -176,13 +177,12 @@ export interface IBasketModel {
 - `_errors: HTMLElement` - элемент ошибки форм.
 
 Методы, реализуемые классом:
-- `private isValid(inputs: HTMLInputElement[]): boolean` - приватный метод, параметром принимает массив элементов полей ввода, возвращает true или false - на основании заполненности всех полей;
-- `private disableSubmit(disabled: boolean): void` - приватный метод, параметром принимает true или false, отключает кнопку отправки формы;
-- `private setValidate(inputs: HTMLInputElement[]): void` - приватный метод, параметром принимает массив элементов полей ввода,  устанавливает валидацию на все поля ввода;
+- `disableSubmit(disabled: boolean): void` - параметром принимает true или false, отключает кнопку отправки формы;
 - `protected findInputByName(name: string): HTMLInputElement` - защищенный метод, параметром принимает наименование поля, возвращает элемент поля ввода на основании переданного имени;
 - `clear(): void` - очищает все поля формы.
 
 Сеттеры, геттеры:
+- `set error(value: string)` - сеттер, позволяет установить текст ошибки формы.
 
 ### Слой данных
 
@@ -231,6 +231,7 @@ export interface IBasketModel {
 - `_order: IOrder` - объект заказа.
 
 Методы, реализуемые классом:
+- `checkValidation(value: string | TPayment): boolean` - валидирует данные;
 - `clearOrder(): void` - очищает поля объекта `_order`.
 
 Сеттеры, геттеры:

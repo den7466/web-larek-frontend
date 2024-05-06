@@ -1,5 +1,5 @@
-import { ICard } from '../types';
-import { ensureElement } from '../utils/utils';
+import { ICard } from '../../types';
+import { ensureElement } from '../../utils/utils';
 import { CardGallery } from './CardGallery';
 
 export interface IViewCardFull {

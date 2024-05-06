@@ -1,4 +1,4 @@
-import { ensureElement } from "../utils/utils";
+import { ensureElement } from "../../utils/utils";
 
 export interface IModal {
 	content: HTMLElement | string;
